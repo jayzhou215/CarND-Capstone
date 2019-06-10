@@ -393,7 +393,7 @@ geometry_msgs::TwistStamped PurePursuit::go()
         return outputZero();
     }
 
-    ROS_INFO("next_target : ( %lf , %lf , %lf)", next_target.x, next_target.y, next_target.z);
+    // ROS_INFO("next_target : ( %lf , %lf , %lf)", next_target.x, next_target.y, next_target.z);
 
     return outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)));
 
