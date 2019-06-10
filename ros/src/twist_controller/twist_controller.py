@@ -39,7 +39,8 @@ class Controller(object):
         current_vel = self.vel_lpf.filt(current_vel)
 
         steering = self.yaw_controller.get_steering(linear_vel, angular_vel, current_vel)
-
+        rospy.loginfo('get_steering linear_vel=%f angular_vel=%f current_vel=%f steering=%f',
+                      linear_vel, angular_vel, current_vel, steering)
         vel_error = linear_vel - current_vel
         self.last_vel = current_vel
 
