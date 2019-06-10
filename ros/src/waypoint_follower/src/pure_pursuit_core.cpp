@@ -39,14 +39,14 @@ void PurePursuit::callbackFromCurrentPose(const geometry_msgs::PoseStampedConstP
     current_pose_.header = msg->header;
     current_pose_.pose = msg->pose;
     pose_set_ = true;
-    ROS_INFO("pose_cb:" << msg->pose)
+    ROS_INFO("pose_cb:" << msg->pose);
 } //processing frequency
 
 void PurePursuit::callbackFromCurrentVelocity(const geometry_msgs::TwistStampedConstPtr &msg)
 {
     current_velocity_ = *msg;
     velocity_set_ = true;
-    ROS_INFO("cur_vel_cb:" << current_velocity_)
+    ROS_INFO("cur_vel_cb:" << current_velocity_);
 }
 
 void PurePursuit::callbackFromWayPoints(const styx_msgs::LaneConstPtr &msg)
