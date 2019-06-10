@@ -57,8 +57,7 @@ class WaypointUpdater(object):
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
-        wp = self.waypoint_tree.query([x, y], 1)
-        closest_idx = wp[1]
+        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
         # check if closest is ahead or behind vehicle
         closest_coord = self.waypoints_2d[closest_idx]
         pred_coord = self.waypoints_2d[closest_idx - 1]
@@ -68,7 +67,7 @@ class WaypointUpdater(object):
         val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
         if val > 0:
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-        rospy.loginfo('x:y %f:%f closest_idx:%d closet_wp:%s', x, y, closest_idx, wp[0])
+        rospy.loginfo('x:y %f:%f closest_idx:%d closest_coord:%s', x, y, closest_idx, closest_coord)
         return closest_idx
 
     def publish_waypoints(self, closest_idx):
