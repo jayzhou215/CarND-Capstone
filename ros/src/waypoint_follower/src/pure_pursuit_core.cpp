@@ -299,7 +299,7 @@ void PurePursuit::getNextWaypoint()
         if (getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position) > lookahead_distance_)
         {
             num_of_next_waypoint_ = i;
-            //ROS_ERROR_STREAM("wp = " << i << " dist = " << getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position) );
+            ROS_ERROR_STREAM("wp = " << i << " dist = " << getPlaneDistance(current_waypoints_.getWaypointPosition(i), current_pose_.pose.position));
             return;
         }
     }
@@ -395,7 +395,8 @@ geometry_msgs::TwistStamped PurePursuit::go()
         return outputZero();
     }
 
-    // ROS_INFO("next_target : ( %lf , %lf , %lf)", next_target.x, next_target.y, next_target.z);
+    ROS_INFO("idx=%d position_of_next_target_ : ( %lf , %lf , %lf)", num_of_next_waypoint_,
+             position_of_next_target_.x, position_of_next_target_.y, position_of_next_target_.z);
 
     return outputTwist(calcTwist(calcCurvature(position_of_next_target_), getCmdVelocity(0)));
 
