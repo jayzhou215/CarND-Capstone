@@ -132,6 +132,7 @@ class WaypointUpdater(object):
         return waypoint.twist.twist.linear.x
 
     def set_waypoint_velocity(self, waypoints, waypoint, velocity):
+        rospy.loginfo('set_waypoint_velocity idx:%d vel:%f', waypoint, velocity)
         waypoints[waypoint].twist.twist.linear.x = velocity
 
     def distance(self, waypoints, wp1, wp2):
