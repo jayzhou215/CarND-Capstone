@@ -32,7 +32,7 @@ class Controller(object):
     def control(self, current_vel, angular_vel, linear_vel, dbw_enabled):
         # TODO: Change the arg, kwarg list to suit your needs
         # Return throttle, brake, steer
-        if dbw_enabled:
+        if not dbw_enabled:
             self.throttle_controller.reset()
             return 0., 0., 0.
         current_vel = self.vel_lpf.filt(current_vel)
