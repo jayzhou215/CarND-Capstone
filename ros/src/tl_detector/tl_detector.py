@@ -10,6 +10,7 @@ import yaml
 from cv_bridge import CvBridge
 from geometry_msgs.msg import Pose, PoseStamped
 from light_classification.tl_classifier import TLClassifier
+from scipy.spatial import KDTree
 from sensor_msgs.msg import Image
 from std_msgs.msg import Int32
 from styx_msgs.msg import Lane, TrafficLight, TrafficLightArray
