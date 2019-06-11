@@ -115,6 +115,7 @@ class WaypointUpdater(object):
 
     def traffic_cb(self, msg):
         light_wp_idx = msg.data
+        rospy.loginfo('traffic_cb idx:%d ', light_wp_idx)
         self.handle_stop(light_wp_idx)
 
     def handle_stop(self, stop_wp_idx):
