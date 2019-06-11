@@ -67,6 +67,8 @@ class WaypointUpdater(object):
         val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
         if val > 0:
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
+        rospy.loginfo('x:y %f:%f closest_idx:%d closest_coord:%s', x, y,
+                      closest_idx, self.waypoints_2d[closest_idx - 5:closest_idx + 5])
         return closest_idx
 
     def publish_waypoints(self, closest_idx):
