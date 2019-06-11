@@ -54,10 +54,29 @@ class WaypointUpdater(object):
                 self.publish_waypoints(closest_idx)
             rate.sleep()
 
+    def closest_waypoint(self, position, waypoints):
+        closestLen = float("inf")
+        closestWaypoint = 0
+        dist = 0.0
+        for idx in range(0, len(waypoints)):
+            x = position.x
+            y = position.y
+            map_x = waypoints[idx].pose.pose.position.x
+            map_y = waypoints[idx].pose.pose.position.y
+            dist = self.distance_any(x, y, map_x, map_y)
+            if (dist < closestLen):
+                closestLen = dist
+                closestWaypoint = idx
+        return closestWaypoint
+
+    def distance_any(self, x1, y1, x2, y2):
+        return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
+
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
-        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+        # closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+        closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints)
         # check if closest is ahead or behind vehicle
         closest_coord = self.waypoints_2d[closest_idx]
         pred_coord = self.waypoints_2d[closest_idx - 1]
