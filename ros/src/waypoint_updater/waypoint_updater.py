@@ -113,7 +113,7 @@ class WaypointUpdater(object):
             self.waypoint_tree = KDTree(self.waypoints_2d)
 
     def traffic_cb(self, msg):
-        light_wp_idx = int(msg)
+        light_wp_idx = msg.data
         self.handle_stop(light_wp_idx)
 
     def handle_stop(self, stop_wp_idx):
@@ -125,7 +125,7 @@ class WaypointUpdater(object):
             self.set_waypoint_velocity(self.base_waypoints.waypoints, stop_wp_idx, 0)
 
     def obstacle_cb(self, msg):
-        self.handle_stop(int(msg))
+        self.handle_stop(msg.data)
 
     def get_waypoint_velocity(self, waypoint):
         return waypoint.twist.twist.linear.x
