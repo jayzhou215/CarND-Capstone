@@ -26,6 +26,7 @@ class TLDetector(object):
         self.waypoints = None
         self.camera_image = None
         self.lights = []
+        self.light_closest_wp_idx = []
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -70,6 +71,13 @@ class TLDetector(object):
 
     def traffic_cb(self, msg):
         self.lights = msg.lights
+        if not self.light_closest_wp_idx:
+            stop_line_positions = self.config['stop_line_positions']
+            self.light_closest_wp_idx = []
+            for i, light in enumerate(self.lights):
+                line = stop_line_positions[i]
+                temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
+                self.light_closest_wp_idx.append(temp_wp_idx)
 
     def image_cb(self, msg):
         """Identifies red lights in the incoming camera image and publishes the index
@@ -114,17 +122,6 @@ class TLDetector(object):
         # closest_idx = self.waypoints_tree.query([x, y], 1)[1]
         closest_idx = self.closest_waypoint(x, y, self.waypoints.waypoints)
         # check if closest is ahead or behind vehicle
-        closest_coord = self.waypoints_2d[closest_idx]
-        pred_coord = self.waypoints_2d[closest_idx - 1]
-        cl_vect = np.array(closest_coord)
-        pre_vect = np.array(pred_coord)
-        pos_vect = np.array([x, y])
-        val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
-        if val > 0:
-            closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-        # rospy.loginfo('pose=[%f, %f] closet=[%f, %f], pre=[%f, %f] closest_idx=%d %s', x,
-        #               y, cl_vect[0], cl_vect[1], pre_vect[0], pre_vect[1], closest_idx,
-        #               self.waypoints_2d[closest_idx:closest_idx + 5])
         return closest_idx
 
     def closest_waypoint(self, x, y, waypoints):
@@ -176,15 +173,14 @@ class TLDetector(object):
         light_wp_idx = None
 
         # List of positions that correspond to the line to stop in front of for a given intersection
-        stop_line_positions = self.config['stop_line_positions']
+
         if(self.pose and self.waypoints and self.lights):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
             # TODO find the closest visible traffic light (if one exists)
             diff = len(self.waypoints.waypoints)
             for i, light in enumerate(self.lights):
-                line = stop_line_positions[i]
-                temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
+                temp_wp_idx = self.light_closest_wp_idx[i]
                 d = temp_wp_idx - car_wp_idx
                 if d >= 0 and d < diff:
                     diff = d
