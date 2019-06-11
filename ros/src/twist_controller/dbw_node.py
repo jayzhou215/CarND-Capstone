@@ -120,7 +120,7 @@ class DBWNode(object):
         bcmd.pedal_cmd_type = BrakeCmd.CMD_TORQUE
         bcmd.pedal_cmd = brake
         self.brake_pub.publish(bcmd)
-        rospy.info('publish: %f %f %f', throttle, brake, steer)
+        rospy.loginfo('publish: %f %f %f', throttle, brake, steer)
 
 
 if __name__ == '__main__':
