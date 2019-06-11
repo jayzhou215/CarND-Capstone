@@ -67,7 +67,6 @@ class WaypointUpdater(object):
         val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
         if val > 0:
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-        rospy.logerr('closest_idx=%d', closest_idx)
         return closest_idx
 
     def publish_waypoints(self, closest_idx):
@@ -76,6 +75,7 @@ class WaypointUpdater(object):
         lane.header = self.base_waypoints.header
         lane.waypoints = waypoints
         self.final_waypoints_pub.publish(lane)
+        rospy.loginfo('closest_idx=%d', closest_idx)
 
     def pose_cb(self, msg):
         self.pose = msg
