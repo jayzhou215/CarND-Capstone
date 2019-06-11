@@ -80,20 +80,18 @@ class WaypointUpdater(object):
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
-        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
-        rospy.loginfo("kd1 idx:%d", closest_idx)
+        # closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+        # rospy.loginfo("kd1 idx:%d", closest_idx)
+        closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
         # check if closest is ahead or behind vehicle
-        # closest_coord = self.waypoints_2d[closest_idx]
-        # pred_coord = self.waypoints_2d[closest_idx - 1]
-        # cl_vect = np.array(closest_coord)
-        # pre_vect = np.array(pred_coord)
-        # pos_vect = np.array([x, y])
-        # val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
-        # if val > 0:
-        #     closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-        # rospy.loginfo("kd idx:%d", closest_idx)
-        # closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
-        # rospy.loginfo("not kd idx:%d", closest_idx)
+        closest_coord = self.waypoints_2d[closest_idx]
+        pred_coord = self.waypoints_2d[closest_idx - 1]
+        cl_vect = np.array(closest_coord)
+        pre_vect = np.array(pred_coord)
+        pos_vect = np.array([x, y])
+        val = np.dot(cl_vect - pre_vect, pos_vect - cl_vect)
+        if val > 0:
+            closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         # rospy.loginfo('pose=[%f, %f] closet=[%f, %f], pre=[%f, %f] closest_idx=%d %s', x,
         #               y, cl_vect[0], cl_vect[1], pre_vect[0], pre_vect[1], closest_idx,
         #               self.waypoints_2d[closest_idx:closest_idx + 5])
