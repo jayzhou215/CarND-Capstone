@@ -56,6 +56,7 @@ class TLDetector(object):
         self.state_count = 0
         self.waypoints_2d = None
         self.waypoints_tree = None
+        self.light_image_cnt = 0
 
         rospy.spin()
 
@@ -89,6 +90,9 @@ class TLDetector(object):
         """
         self.has_image = True
         self.camera_image = msg
+        self.light_image_cnt = self.light_image_cnt + 1
+        if self.light_image_cnt % 3 != 0:
+            return
         if not self.waypoints_tree:
             return
         light_wp, state = self.process_traffic_lights()
