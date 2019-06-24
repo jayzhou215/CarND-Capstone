@@ -114,7 +114,7 @@ class WaypointUpdater(object):
             lane.waypoints = waypoints
             rospy.loginfo('normal closest_idx=%d', closest_idx)
         else:
-            lane.waypoints = self.decelerate_waypoints(self.base_waypoints.waypoints, closest_idx)
+            lane.waypoints = self.decelerate_waypoints(waypoints, closest_idx)
             rospy.loginfo('use decelerate closest_idx=%d', closest_idx)
         return lane
 
@@ -123,10 +123,13 @@ class WaypointUpdater(object):
         for i, wp in enumerate(waypoints):
             p = Waypoint()
             stop_idx = max(self.stop_wp_idx - closest_idx - 2, 0)
-            dist = self.distance(waypoints, i, stop_idx)
-            vel = math.sqrt(2 * dist * MAX_DECEL)
-            if vel < 1.:
+            if i > stop_idx:
                 vel = 0.
+            else:
+                dist = self.distance(waypoints, i, stop_idx)
+                vel = math.sqrt(2 * dist * MAX_DECEL)
+                if vel < 1.:
+                    vel = 0.
             p.pose = wp.pose
             p.twist.twist.linear.x = min(vel, wp.twist.twist.linear.x)
             temp.append(p)
