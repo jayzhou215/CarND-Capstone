@@ -60,30 +60,48 @@ class WaypointUpdater(object):
             rate.sleep()
 
     def get_closest_waypoint_idx(self):
-        x = self.pose.pose.position.x
-        y = self.pose.pose.position.y
-        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
-
-        # Check if closest is ahead or behind vehicles
-        closest_coord = self.waypoints_2d[closest_idx]
-        pre_coord = self.waypoints_2d[closest_idx - 1]
-
-        # Equation for hyperplane through closest_coords
-        cl_vect = np.array(closest_coord)
-        prev_vect = np.array(pre_coord)
-        pos_vect = np.array([x, y])
-
-        val = np.dot(cl_vect - prev_vect, pos_vect - cl_vect)
-
-        if val > 0:
-            closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
-        return closest_idx
-        # closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
+        # x = self.pose.pose.position.x
+        # y = self.pose.pose.position.y
+        # closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+        #
+        # # Check if closest is ahead or behind vehicles
+        # closest_coord = self.waypoints_2d[closest_idx]
+        # pre_coord = self.waypoints_2d[closest_idx - 1]
+        #
+        # # Equation for hyperplane through closest_coords
+        # cl_vect = np.array(closest_coord)
+        # prev_vect = np.array(pre_coord)
+        # pos_vect = np.array([x, y])
+        #
+        # val = np.dot(cl_vect - prev_vect, pos_vect - cl_vect)
+        #
+        # if val > 0:
+        #     closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         # return closest_idx
+        closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
+        return closest_idx
 
     def publish_waypoints(self):
         lane = self.generate_lane()
         self.final_waypoints_pub.publish(lane)
+
+    def closest_waypoint(self, position, waypoints):
+        closestLen = float("inf")
+        closestWaypoint = 0
+        dist = 0.0
+        for idx in range(0, len(waypoints)):
+            x = position.x
+            y = position.y
+            map_x = waypoints[idx].pose.pose.position.x
+            map_y = waypoints[idx].pose.pose.position.y
+            dist = self.distance_any(x, y, map_x, map_y)
+            if (dist < closestLen):
+                closestLen = dist
+                closestWaypoint = idx
+        return closestWaypoint
+
+    def distance_any(self, x1, y1, x2, y2):
+        return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 
     def generate_lane(self):
         lane = Lane()
