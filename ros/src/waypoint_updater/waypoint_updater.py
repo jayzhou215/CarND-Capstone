@@ -94,7 +94,12 @@ class WaypointUpdater(object):
         waypoints = self.base_waypoints.waypoints[closest_idx: fatherest_idx]
         if self.stop_wp_idx == -1 or (self.stop_wp_idx >= fatherest_idx):
             lane.waypoints = waypoints
-            rospy.loginfo('normal closest_idx=%d', closest_idx)
+            rospy.loginfo(
+                'normal closest_idx=%d %s %s %s', closest_idx,
+                self.base_waypoints.waypoints[closest_idx],
+                self.base_waypoints.waypoints[closest_idx + 10],
+                self.base_waypoints.waypoints[fatherest_idx],
+            )
         else:
             lane.waypoints = self.decelerate_waypoints(waypoints, closest_idx)
             rospy.loginfo('use decelerate closest_idx=%d', closest_idx)
