@@ -89,6 +89,8 @@ class TLDetector(object):
         """
         self.has_image = True
         self.camera_image = msg
+        if not self.waypoints_tree:
+            return
         light_wp, state = self.process_traffic_lights()
 
         '''
