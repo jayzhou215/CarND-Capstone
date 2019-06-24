@@ -59,24 +59,6 @@ class WaypointUpdater(object):
                 self.publish_waypoints()
             rate.sleep()
 
-    def closest_waypoint(self, position, waypoints):
-        closestLen = float("inf")
-        closestWaypoint = 0
-        dist = 0.0
-        for idx in range(0, len(waypoints)):
-            x = position.x
-            y = position.y
-            map_x = waypoints[idx].pose.pose.position.x
-            map_y = waypoints[idx].pose.pose.position.y
-            dist = self.distance_any(x, y, map_x, map_y)
-            if (dist < closestLen):
-                closestLen = dist
-                closestWaypoint = idx
-        return closestWaypoint
-
-    def distance_any(self, x1, y1, x2, y2):
-        return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
-
     def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
@@ -137,6 +119,10 @@ class WaypointUpdater(object):
 
     def pose_cb(self, msg):
         self.pose = msg
+        x = self.pose.pose.position.x
+        y = self.pose.pose.position.y
+
+        rospy.loginfo('pose_cb %f:%f', x, y)
 
     def waypoints_cb(self, waypoints):
         self.base_waypoints = waypoints

@@ -137,22 +137,6 @@ class TLDetector(object):
             closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         return closest_idx
 
-    def closest_waypoint(self, x, y, waypoints):
-        closestLen = float("inf")
-        closestWaypoint = 0
-        dist = 0.0
-        for idx in range(0, len(waypoints)):
-            map_x = waypoints[idx].pose.pose.position.x
-            map_y = waypoints[idx].pose.pose.position.y
-            dist = self.distance_any(x, y, map_x, map_y)
-            if (dist < closestLen):
-                closestLen = dist
-                closestWaypoint = idx
-        return closestWaypoint
-
-    def distance_any(self, x1, y1, x2, y2):
-        return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
-
     def get_light_state(self, light):
         """Determines the current color of the traffic light
 
