@@ -123,7 +123,7 @@ class WaypointUpdater(object):
         for i, wp in enumerate(waypoints):
             p = Waypoint()
             stop_idx = max(self.stop_wp_idx - closest_idx - 2, 0)
-            if i > stop_idx:
+            if i + closest_idx >= stop_idx:
                 vel = 0.
             else:
                 dist = self.distance(waypoints, i, stop_idx)
