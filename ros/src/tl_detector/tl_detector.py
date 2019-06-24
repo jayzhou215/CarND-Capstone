@@ -127,7 +127,18 @@ class TLDetector(object):
         """
         closest_idx = self.waypoints_tree.query([x, y], 1)[1]
         # closest_idx = self.closest_waypoint(x, y, self.waypoints.waypoints)
-        # check if closest is ahead or behind vehicle
+        closest_coord = self.waypoints_2d[closest_idx]
+        pre_coord = self.waypoints_2d[closest_idx - 1]
+
+        # Equation for hyperplane through closest_coords
+        cl_vect = np.array(closest_coord)
+        prev_vect = np.array(pre_coord)
+        pos_vect = np.array([x, y])
+
+        val = np.dot(cl_vect - prev_vect, pos_vect - cl_vect)
+
+        if val > 0:
+            closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         return closest_idx
 
     def closest_waypoint(self, x, y, waypoints):
