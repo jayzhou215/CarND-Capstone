@@ -25,7 +25,7 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 20  # Number of waypoints we will publish. You can change this number
+LOOKAHEAD_WPS = 40  # Number of waypoints we will publish. You can change this number
 
 MAX_DECEL = 1.
 
@@ -78,13 +78,26 @@ class WaypointUpdater(object):
         return math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
 
     def get_closest_waypoint_idx(self):
-        # x = self.pose.pose.position.x
-        # y = self.pose.pose.position.y
-        # closest_idx = self.waypoint_tree.query([x, y], 1)[1]
-        # rospy.loginfo("kd1 idx:%d", closest_idx)
-        closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
-        # check if closest is ahead or behind vehicle
+        x = self.pose.pose.position.x
+        y = self.pose.pose.position.y
+        closest_idx = self.waypoint_tree.query([x, y], 1)[1]
+
+        # Check if closest is ahead or behind vehicles
+        closest_coord = self.waypoints_2d[closest_idx]
+        pre_coord = self.waypoints_2d[closest_idx - 1]
+
+        # Equation for hyperplane through closest_coords
+        cl_vect = np.array(closest_coord)
+        prev_vect = np.array(pre_coord)
+        pos_vect = np.array([x, y])
+
+        val = np.dot(cl_vect - prev_vect, pos_vect - cl_vect)
+
+        if val > 0:
+            closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
         return closest_idx
+        # closest_idx = self.closest_waypoint(self.pose.pose.position, self.base_waypoints.waypoints)
+        # return closest_idx
 
     def publish_waypoints(self):
         lane = self.generate_lane()
